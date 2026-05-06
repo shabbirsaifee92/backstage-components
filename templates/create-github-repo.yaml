@@ -16,7 +16,6 @@ spec:
     - title: Repository Details
       required:
         - repoName
-        - repoOwner
       properties:
         repoName:
           title: Repository Name
@@ -57,5 +56,5 @@ spec:
         url: https://github.com/shabbirsaifee92/backstage-components/actions/workflows/create-repo.yml
         icon: dashboard
       - title: New Repository (available once workflow completes)
-        url: https://github.com/${{ parameters.repoOwner }}/${{ parameters.repoName }}
+        url: https://github.com/shabbirsaifee92/${{ parameters.repoName }}
         icon: github
