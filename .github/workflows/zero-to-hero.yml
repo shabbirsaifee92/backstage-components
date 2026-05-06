@@ -1,0 +1,43 @@
+name: Zero to Hero
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo_name:
+        description: Repository name
+        required: true
+        type: string
+      description:
+        description: Repository description
+        required: false
+        type: string
+        default: ''
+      visibility:
+        description: Repository visibility
+        required: false
+        type: choice
+        options: [private, internal, public]
+        default: private
+      chart_directory:
+        description: Directory within the new repo to create the Helm chart
+        required: false
+        type: string
+        default: helm
+
+jobs:
+  create-repo:
+    uses: shabbirsaifee92/backstage-components/.github/workflows/create-repo.yml@main
+    with:
+      repo_name: ${{ inputs.repo_name }}
+      description: ${{ inputs.description }}
+      visibility: ${{ inputs.visibility }}
+    secrets: inherit
+
+  scaffold-helm-chart:
+    needs: create-repo
+    uses: shabbirsaifee92/backstage-components/.github/workflows/create-helm-chart.yml@main
+    with:
+      repo_name: ${{ inputs.repo_name }}
+      app_name: ${{ inputs.repo_name }}
+      chart_directory: ${{ inputs.chart_directory }}
+    secrets: inherit
