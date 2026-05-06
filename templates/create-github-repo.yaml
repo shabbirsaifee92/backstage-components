@@ -1,0 +1,61 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: create-github-repo
+  title: Create GitHub Repository
+  description: Creates a new GitHub repository via Terraform, triggered through GitHub Actions.
+  tags:
+    - github
+    - terraform
+    - recommended
+spec:
+  owner: group:lava
+  type: service
+
+  parameters:
+    - title: Repository Details
+      required:
+        - repoName
+        - repoOwner
+      properties:
+        repoName:
+          title: Repository Name
+          type: string
+          description: Lowercase letters, numbers, and hyphens only
+          pattern: '^[a-z0-9][a-z0-9-]*[a-z0-9]$'
+          ui:autofocus: true
+        description:
+          title: Description
+          type: string
+          description: Short description of what this repository is for
+          default: ''
+        visibility:
+          title: Visibility
+          type: string
+          enum:
+            - private
+            - internal
+            - public
+          default: private
+
+  steps:
+    - id: trigger
+      name: Trigger Repository Creation via GitHub Actions
+      action: github:actions:dispatch
+      input:
+        repoUrl: github.com?owner=shabbirsaifee92&repo=backstage-components
+        workflowId: create-repo.yml
+        branchOrTagName: main
+        workflowInputs:
+          repo_name: ${{ parameters.repoName }}
+          description: ${{ parameters.description }}
+          visibility: ${{ parameters.visibility }}
+
+  output:
+    links:
+      - title: View GitHub Actions Run
+        url: https://github.com/shabbirsaifee92/backstage-components/actions/workflows/create-repo.yml
+        icon: dashboard
+      - title: New Repository (available once workflow completes)
+        url: https://github.com/${{ parameters.repoOwner }}/${{ parameters.repoName }}
+        icon: github
