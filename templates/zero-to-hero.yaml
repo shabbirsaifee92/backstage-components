@@ -1,0 +1,77 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: zero-to-hero
+  title: Zero to Hero — New Repo with Helm Chart
+  description: Creates a new GitHub repository and scaffolds a Helm chart into it in one shot.
+  tags:
+    - github
+    - helm
+    - terraform
+    - recommended
+spec:
+  owner: user:default/guest
+  type: service
+
+  parameters:
+    - title: Repository Details
+      required:
+        - repoName
+      properties:
+        repoName:
+          title: Repository Name
+          type: string
+          description: Lowercase letters, numbers, and hyphens only
+          pattern: '^[a-z0-9][a-z0-9-]*[a-z0-9]$'
+          ui:autofocus: true
+        description:
+          title: Description
+          type: string
+          description: Short description of what this repository is for
+          default: ''
+        visibility:
+          title: Visibility
+          type: string
+          enum: [private, internal, public]
+          default: private
+
+    - title: Helm Chart
+      properties:
+        chartDirectory:
+          title: Chart Directory
+          type: string
+          description: Directory within the new repo to create the Helm chart
+          default: helm
+
+  steps:
+    - id: log-inputs
+      name: Log Parameters
+      action: debug:log
+      input:
+        message: |
+          Creating repo: shabbirsaifee92/${{ parameters.repoName }}
+          Visibility: ${{ parameters.visibility }}
+          Helm chart directory: ${{ parameters.chartDirectory }}
+
+    - id: trigger
+      name: Trigger Zero to Hero Workflow
+      action: github:actions:dispatch
+      input:
+        repoUrl: github.com?owner=shabbirsaifee92&repo=backstage-components
+        workflowId: zero-to-hero.yml
+        branchOrTagName: main
+        workflowInputs:
+          repo_name: ${{ parameters.repoName }}
+          repo_owner: shabbirsaifee92
+          description: ${{ parameters.description }}
+          visibility: ${{ parameters.visibility }}
+          chart_directory: ${{ parameters.chartDirectory }}
+
+  output:
+    links:
+      - title: View GitHub Actions Run
+        url: https://github.com/shabbirsaifee92/backstage-components/actions/workflows/zero-to-hero.yml
+        icon: dashboard
+      - title: New Repository (available once workflow completes)
+        url: https://github.com/shabbirsaifee92/${{ parameters.repoName }}
+        icon: github
