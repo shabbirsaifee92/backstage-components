@@ -62,7 +62,6 @@ spec:
         branchOrTagName: main
         workflowInputs:
           repo_name: ${{ parameters.repoName }}
-          repo_owner: shabbirsaifee92
           description: ${{ parameters.description }}
           visibility: ${{ parameters.visibility }}
           chart_directory: ${{ parameters.chartDirectory }}
