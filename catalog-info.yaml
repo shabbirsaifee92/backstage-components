@@ -4,7 +4,7 @@
     name: backstage-components
     description: Test components for Backstage
     annotations:
-      github.com/project-slug: shabbirsaifee91/backstage-components
+      github.com/project-slug: shabbirsaifee92/backstage-components
   spec:
     type: library
     lifecycle: experimental
