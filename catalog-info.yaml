@@ -1,0 +1,11 @@
+  apiVersion: backstage.io/v1alpha1
+  kind: Component
+  metadata:
+    name: backstage-components
+    description: Test components for Backstage
+    annotations:
+      github.com/project-slug: shabbirsaifee91/backstage-components
+  spec:
+    type: library
+    lifecycle: experimental
+    owner: user:default/guest
