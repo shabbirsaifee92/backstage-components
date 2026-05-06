@@ -16,10 +16,20 @@ on:
         description: Repository visibility
         required: false
         type: choice
-        options:
-          - private
-          - internal
-          - public
+        options: [private, internal, public]
+        default: private
+  workflow_call:
+    inputs:
+      repo_name:
+        required: true
+        type: string
+      description:
+        required: false
+        type: string
+        default: ''
+      visibility:
+        required: false
+        type: string
         default: private
 
 jobs:
@@ -30,7 +40,7 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: '~1.14'
+          terraform_version: '~1.9'
 
       - name: Terraform Init
         working-directory: terraform/github-repo
@@ -41,6 +51,7 @@ jobs:
         run: |
           terraform apply -auto-approve \
             -var="repo_name=${{ inputs.repo_name }}" \
+            -var="repo_owner=shabbirsaifee92" \
             -var="description=${{ inputs.description }}" \
             -var="visibility=${{ inputs.visibility }}"
         env:
