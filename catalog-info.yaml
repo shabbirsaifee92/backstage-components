@@ -18,3 +18,5 @@ metadata:
 spec:
   targets:
     - ./templates/create-github-repo.yaml
+    - ./templates/create-helm-chart.yaml
+    - ./templates/zero-to-hero.yaml
