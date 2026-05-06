@@ -51,7 +51,6 @@ spec:
         branchOrTagName: main
         workflowInputs:
           repo_name: ${{ parameters.repoName }}
-          repo_owner: shabbirsaifee92
           app_name: ${{ parameters.appName }}
           chart_directory: ${{ parameters.chartDirectory }}
 
