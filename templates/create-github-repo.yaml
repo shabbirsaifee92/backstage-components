@@ -9,7 +9,7 @@ metadata:
     - terraform
     - recommended
 spec:
-  owner: group:lava
+  owner: user:default/guest
   type: service
 
   parameters:
