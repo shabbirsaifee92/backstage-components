@@ -1,0 +1,47 @@
+name: Create GitHub Repository
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo_name:
+        description: Repository name
+        required: true
+        type: string
+      description:
+        description: Repository description
+        required: false
+        type: string
+        default: ''
+      visibility:
+        description: Repository visibility
+        required: false
+        type: choice
+        options:
+          - private
+          - internal
+          - public
+        default: private
+
+jobs:
+  create-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '~1.14'
+
+      - name: Terraform Init
+        working-directory: terraform/github-repo
+        run: terraform init
+
+      - name: Terraform Apply
+        working-directory: terraform/github-repo
+        run: |
+          terraform apply -auto-approve \
+            -var="repo_name=${{ inputs.repo_name }}" \
+            -var="description=${{ inputs.description }}" \
+            -var="visibility=${{ inputs.visibility }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
