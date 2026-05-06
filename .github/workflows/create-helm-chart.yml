@@ -1,0 +1,60 @@
+name: Scaffold Helm Chart
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo_name:
+        description: Target repository name
+        required: true
+        type: string
+      app_name:
+        description: Name of the Helm chart/app to create
+        required: true
+        type: string
+      chart_directory:
+        description: Directory within the repo to place the chart (e.g. helm, charts/infra)
+        required: false
+        type: string
+        default: helm
+  workflow_call:
+    inputs:
+      repo_name:
+        required: true
+        type: string
+      app_name:
+        required: true
+        type: string
+      chart_directory:
+        required: false
+        type: string
+        default: helm
+
+jobs:
+  scaffold-helm-chart:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: azure/setup-helm@v4
+        with:
+          version: latest
+
+      - name: Clone target repository
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          git clone https://x-access-token:${GH_TOKEN}@github.com/shabbirsaifee92/${{ inputs.repo_name }}.git repo
+          cd repo
+          git config user.email "backstage-bot@lava.covermymeds.com"
+          git config user.name "Lava Backstage Bot"
+
+      - name: Scaffold Helm chart
+        run: |
+          cd repo
+          mkdir -p ${{ inputs.chart_directory }}
+          helm create ${{ inputs.chart_directory }}/${{ inputs.app_name }}
+
+      - name: Commit and push
+        run: |
+          cd repo
+          git add .
+          git commit -m "Add Helm chart scaffolding via Lava Backstage"
+          git push
