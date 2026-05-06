@@ -9,3 +9,12 @@
     type: library
     lifecycle: experimental
     owner: user:default/guest
+---
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: backstage-components
+  description: Platform templates for the Lava Developer Portal
+spec:
+  targets:
+    - ./templates/create-github-repo.yaml
