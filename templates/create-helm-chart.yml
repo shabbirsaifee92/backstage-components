@@ -1,0 +1,65 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: create-helm-chart
+  title: Scaffold Helm Chart
+  description: Adds a Helm chart to an existing GitHub repository.
+  tags:
+    - helm
+    - github
+spec:
+  owner: user:default/guest
+  type: service
+
+  parameters:
+    - title: Target Repository
+      required:
+        - repoName
+        - appName
+      properties:
+        repoName:
+          title: Repository Name
+          type: string
+          description: The existing GitHub repository to add the Helm chart to
+          ui:autofocus: true
+        appName:
+          title: App Name
+          type: string
+          description: Name of the Helm chart/app to create (e.g. myapp)
+        chartDirectory:
+          title: Chart Directory
+          type: string
+          description: Directory within the repo to place the chart (e.g. helm, charts/infra)
+          default: helm
+
+  steps:
+    - id: log-inputs
+      name: Log Parameters
+      action: debug:log
+      input:
+        message: |
+          Scaffolding Helm chart into: shabbirsaifee92/${{ parameters.repoName }}
+          App name: ${{ parameters.appName }}
+          Chart directory: ${{ parameters.chartDirectory }}
+
+    - id: trigger
+      name: Scaffold Helm Chart via GitHub Actions
+      action: github:actions:dispatch
+      input:
+        repoUrl: github.com?owner=shabbirsaifee92&repo=backstage-components
+        workflowId: create-helm-chart.yml
+        branchOrTagName: main
+        workflowInputs:
+          repo_name: ${{ parameters.repoName }}
+          repo_owner: shabbirsaifee92
+          app_name: ${{ parameters.appName }}
+          chart_directory: ${{ parameters.chartDirectory }}
+
+  output:
+    links:
+      - title: View GitHub Actions Run
+        url: https://github.com/shabbirsaifee92/backstage-components/actions/workflows/create-helm-chart.yml
+        icon: dashboard
+      - title: Target Repository
+        url: https://github.com/shabbirsaifee92/${{ parameters.repoName }}
+        icon: github
